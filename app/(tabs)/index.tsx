@@ -8,10 +8,10 @@ export default function Index() {
     <View style={styles.container}>
       {/* 1. Logo foodwise */}
       <Image
-        source={require("../assets/images/logo.png")} 
+        source={require("../../assets/images/logo.png")} 
         style={styles.logo}
       />
-
+ 
       {/* 2. Nome do App */}
       <Text style={styles.appName}>FoodWise</Text>
       <Link 
