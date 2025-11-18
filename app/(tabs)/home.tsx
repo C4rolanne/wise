@@ -65,7 +65,7 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/pages/categorias")}
       >
         <Entypo name="plus" size={32} color={"black"} />
       </TouchableOpacity>
@@ -74,7 +74,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // ----------------------- 1. ESTILOS DE TELA E HEADER -----------------------
+  // ----------- 1. ESTILOS DE TELA E HEADER ------------
   fullScreenContainer: {
     flex: 1,
     backgroundColor: "#FFF3E0",
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
 
-  // ----------------------- 2. ESTILOS DAS CATEGORIAS (Corrigidos) -----------------------
+  // --------- 2. ESTILOS DAS CATEGORIAS (Corrigidos) ------------
 
   // PASSO 1: categoryContainer
   categoryContainer: {
