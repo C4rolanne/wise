@@ -1,12 +1,23 @@
-import React, { useState } from "react";
-import { router } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView, RefreshControl } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const STORAGE_TYPE = 'freezer'; // MUDE AQUI para cada tela!
-const STORAGE_KEY = '@foods_database';
+// ----------------------------------------------------------------------
+// IMPORTANTE:
+// Este código está configurado para o Freezer, pois STORAGE_TYPE = 'freezer'.
+const STORAGE_TYPE = "freezer";
+// ----------------------------------------------------------------------
+const STORAGE_KEY = "@foods_database";
 
 interface Food {
   id: number;
@@ -30,16 +41,18 @@ export default function HomeScreen() {
 
   const loadFoods = async () => {
     try {
+      // Usando AsyncStorage para simular o banco de dados
       const storedFoods = await AsyncStorage.getItem(STORAGE_KEY);
       if (storedFoods) {
         const allFoods = JSON.parse(storedFoods);
+        // Filtra apenas alimentos do Freezer
         const filteredFoods = allFoods.filter(
           (food: Food) => food.storage === STORAGE_TYPE
         );
         setFoods(filteredFoods);
       }
     } catch (error) {
-      console.error('Erro ao carregar alimentos:', error);
+      console.error("Erro ao carregar alimentos:", error);
     }
   };
 
@@ -58,19 +71,19 @@ export default function HomeScreen() {
   };
 
   const getStatusColor = (days: number): string => {
-    if (days < 0) return '#ef4444';
-    if (days <= 3) return '#f59e0b';
-    return '#10b981';
+    if (days < 0) return "#ef4444"; // Vermelho (Vencido)
+    if (days <= 3) return "#f59e0b"; // Amarelo (Próximo)
+    return "#10b981"; // Verde (Ok)
   };
 
   const formatDate = (dateString: string): string => {
-    const [year, month, day] = dateString.split('-');
+    const [year, month, day] = dateString.split("-");
     return `${day}/${month}/${year}`;
   };
 
   return (
     <View style={styles.fullScreenContainer}>
-      {/* Header */}
+      {/* Header Customizado */}
       <View style={styles.headerLaranja}>
         <TouchableOpacity style={styles.iconButton}>
           <Entypo name="dots-three-vertical" size={24} color="black" />
@@ -85,23 +98,44 @@ export default function HomeScreen() {
       <View style={styles.contentBody}>
         {/* Container das Categorias */}
         <View style={styles.categoryContainer}>
-          <TouchableOpacity onPress={() => router.push("/home")} style={styles.categoryButton}>
-            <MaterialCommunityIcons name="fridge-outline" size={35} color="black" />
+          {/* Botão Geladeira */}
+          <TouchableOpacity
+            onPress={() => router.push("/home")}
+            style={styles.categoryButton}
+          >
+            <MaterialCommunityIcons
+              name="fridge-outline"
+              size={35}
+              color="black"
+            />
           </TouchableOpacity>
 
+          {/* Botão Freezer (SELECIONADO) */}
           <TouchableOpacity style={styles.categorySelectedButton}>
-            <MaterialCommunityIcons name="cube-outline" size={35} color="black" />
+            <MaterialCommunityIcons
+              name="cube-outline"
+              size={35}
+              color="black"
+            />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/despensa")} style={styles.categoryButton}>
-            <MaterialCommunityIcons name="basket-outline" size={35} color="black" />
+          {/* Botão Despensa */}
+          <TouchableOpacity
+            onPress={() => router.push("/despensa")}
+            style={styles.categoryButton}
+          >
+            <MaterialCommunityIcons
+              name="basket-outline"
+              size={35}
+              color="black"
+            />
           </TouchableOpacity>
         </View>
 
         {/* Lista de Itens */}
         <Text style={styles.bodyText}>Lista de Itens</Text>
-        
-        <ScrollView 
+
+        <ScrollView
           style={styles.scrollContainer}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -109,23 +143,30 @@ export default function HomeScreen() {
         >
           {foods.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Nenhum alimento cadastrado</Text>
+              <Text style={styles.emptyText}>
+                Nenhum alimento cadastrado no Freezer
+              </Text>
             </View>
           ) : (
             foods.map((food) => {
               const daysRemaining = calculateDaysRemaining(food.expirationDate);
               const statusColor = getStatusColor(daysRemaining);
-              
+
               return (
                 <View key={food.id} style={styles.foodCard}>
                   <Text style={styles.foodName}>{food.name}</Text>
-                  
-                  <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: statusColor },
+                    ]}
+                  >
                     <Text style={styles.statusText}>
-                      {daysRemaining < 0 ? 'VENCIDO' : `${daysRemaining} dias`}
+                      {daysRemaining < 0 ? "VENCIDO" : `${daysRemaining} dias`}
                     </Text>
                   </View>
-                  
+
                   <Text style={styles.dateText}>
                     Validade: {formatDate(food.expirationDate)}
                   </Text>
@@ -146,6 +187,16 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+// ----------------------------------------------------------------------
+// 👇 SOLUÇÃO: REMOVER O CABEÇALHO NATIVO DO EXPO-ROUTER PARA ESTA TELA
+// ----------------------------------------------------------------------
+export const unstable_settings = {
+  options: {
+    headerShown: false, // Isso remove o cabeçalho "freezer" no topo da tela
+  },
+};
+// ----------------------------------------------------------------------
 
 const styles = StyleSheet.create({
   fullScreenContainer: {
