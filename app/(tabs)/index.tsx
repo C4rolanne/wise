@@ -1,9 +1,13 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View} from "react-native";
 import {Link} from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
+
 
 export default function Index() {
   // Removemos const router e const SPLASH_DURATION
-
+ 
   return (
     <View style={styles.container}>
       {/* 1. Logo foodwise */}

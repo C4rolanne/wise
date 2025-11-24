@@ -1,11 +1,11 @@
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { router } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, RefreshControl } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import { router } from "expo-router";
-import React, { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 
-const STORAGE_TYPE = 'geladeira'; // MUDE AQUI para cada tela!
+const STORAGE_TYPE = 'despensa'; // MUDE AQUI para cada tela!
 const STORAGE_KEY = '@foods_database';
 
 interface Food {
@@ -85,7 +85,7 @@ export default function HomeScreen() {
       <View style={styles.contentBody}>
         {/* Container das Categorias */}
         <View style={styles.categoryContainer}>
-          <TouchableOpacity style={styles.categorySelectedButton}>
+          <TouchableOpacity onPress={() => router.push("/home")} style={styles.categoryButton}>
             <MaterialCommunityIcons name="fridge-outline" size={35} color="black" />
           </TouchableOpacity>
 
@@ -93,7 +93,7 @@ export default function HomeScreen() {
             <MaterialCommunityIcons name="cube-outline" size={35} color="black" />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/despensa")} style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categorySelectedButton}>
             <MaterialCommunityIcons name="basket-outline" size={35} color="black" />
           </TouchableOpacity>
         </View>

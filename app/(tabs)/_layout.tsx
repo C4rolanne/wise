@@ -5,7 +5,8 @@ export default function TabsLayout() {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="home" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ title: "" }} />
+      <Stack.Screen name="freezer" options={{ headerShown: false }} />
+      <Stack.Screen name="despensa" options={{ headerShown: false }} />
     </Stack>
   );
 }
