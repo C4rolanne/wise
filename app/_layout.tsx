@@ -10,6 +10,8 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen name="freezer" options={{ headerShown: false }} />
+      <Stack.Screen name="despensa" options={{ headerShown: false }} />
     </Stack>
   );
 }
