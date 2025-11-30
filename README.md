@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# 🍎 FoodWise
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**FoodWise** é um aplicativo móvel desenvolvido para ajudar usuários a gerenciar o estoque de alimentos em suas casas, combatendo o desperdício ao rastrear as datas de validade de forma simples e intuitiva.
 
-## Get started
+A aplicação foi desenvolvida em **React Native** com **Expo** e utiliza o **Expo Router** para navegação.
 
-1. Install dependencies
+## 🌟 Funcionalidades
 
-   ```bash
-   npm install
-   ```
+* **Controle de Estoque Inteligente:** Visualize e filtre alimentos por local de armazenamento (Geladeira, Freezer e Despensa).
+* **Alerta de Validade:** Indicadores visuais (cores) alertam o usuário sobre itens vencidos (Vermelho) ou próximos ao vencimento (Laranja).
+* **Cadastro Completo (CRUD):** Interface para Criação, Leitura, Atualização e Exclusão de registros de alimentos.
+* **Mr.Bot (Simulação de IA):** Tela de chat que simula a sugestão de receitas baseadas nos alimentos que precisam ser consumidos.
 
-2. Start the app
+## 💻 Tecnologias
 
-   ```bash
-   npx expo start
-   ```
+| Categoria | Tecnologia | Versão |
+| :--- | :--- | :--- |
+| **Framework** | React Native | 0.81.5 |
+| **Plataforma** | Expo | ~54.0.24 |
+| **Navegação** | Expo Router | ~6.0.15 |
+| **Persistência** | AsyncStorage | ~2.2.0 |
 
-In the output, you'll find options to open the app in a
+## ⚙️ Como Executar o Projeto (Para Teste)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Para visualizar e testar a aplicação localmente:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1.  **Clone o Repositório:**
+    ```bash
+    git clone [https://github.com/C4rolanne/wise.git](https://github.com/C4rolanne/wise.git)
+    cd wise
+    ```
+2.  **Instale as Dependências:**
+    ```bash
+    npm install
+    ```
+3.  **Inicie o Servidor Expo:**
+    ```bash
+    npx expo start
+    ```
+    *Escaneie o QR Code exibido no terminal com o aplicativo **Expo Go** no seu celular.*
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
