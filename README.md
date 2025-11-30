@@ -38,4 +38,11 @@ Para visualizar e testar a aplicação localmente:
     npx expo start
     ```
     *Escaneie o QR Code exibido no terminal com o aplicativo **Expo Go** no seu celular.*
+    
+4.  **Acesso do APP pelo vercel**
+    ```bash
+    https://wise-git-main-annes-projects-827a94df.vercel.app?_vercel_share=P2RgPIlArW9dB2tWjiS9ry0bwDs9Cyr7 
+    ```
+   
+  
 
