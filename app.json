@@ -29,6 +29,13 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permita que o FoodWise leia uma foto para sugerir dados do alimento.",
+          "cameraPermission": "Permita que o FoodWise use a camera para analisar alimentos."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",

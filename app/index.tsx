@@ -1,36 +1,32 @@
-import { Link } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { useEffect } from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-WebBrowser.maybeCompleteAuthSession();
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Index() {
-  // Removemos const router e const SPLASH_DURATION
+  const { isAuthenticated, loading, error, signInWithGoogle } = useAuth();
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.replace("/(tabs)/home");
+    }
+  }, [isAuthenticated, loading]);
 
   return (
     <View style={styles.container}>
-      {/* 1. Logo foodwise */}
-      <Image
-        source={require("../assets/images/logo.png")}
-        style={styles.logo}
-      />
-
-      {/* 2. Nome do App */}
+      <Image source={require("../assets/images/logo.png")} style={styles.logo} />
       <Text style={styles.appName}>FoodWise</Text>
-      <Link
-        href="/(tabs)/home"
-        style={{
-          width: 100,
-          height: 30,
-          backgroundColor: "transparent",
-          borderWidth: 1,
-          borderRadius: 8,
-          textAlign: "center",
-        }}
-      >
-        {" "}
-        Home Page
-      </Link>
+
+      {loading ? <ActivityIndicator color="black" /> : null}
+
+      {!loading && !isAuthenticated ? (
+        <TouchableOpacity style={styles.loginButton} onPress={signInWithGoogle}>
+          <Text style={styles.loginButtonText}>Entrar com Google</Text>
+        </TouchableOpacity>
+      ) : null}
+
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 }
@@ -38,22 +34,37 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFB74D", // Laranja
-    justifyContent: "center", // Centraliza verticalmente
-    alignItems: "center", // Centraliza horizontalmente
+    backgroundColor: "#FFB74D",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
   },
-
   logo: {
-    // Defina o tamanho da sua logo (exemplo)
     width: 200,
     height: 200,
-    marginBottom: 3, // Espaçamento entre a logo e o nome
-    resizeMode: "contain", // Garante que a imagem se ajuste bem
+    marginBottom: 3,
+    resizeMode: "contain",
   },
-
   appName: {
-    color: "black", // Cor do texto
+    color: "black",
     fontSize: 55,
     fontWeight: "bold",
+    marginBottom: 24,
+  },
+  loginButton: {
+    backgroundColor: "black",
+    borderRadius: 12,
+    paddingHorizontal: 22,
+    paddingVertical: 14,
+  },
+  loginButtonText: {
+    color: "white",
+    fontWeight: "800",
+    fontSize: 16,
+  },
+  errorText: {
+    color: "#7f1d1d",
+    textAlign: "center",
+    marginTop: 16,
   },
 });

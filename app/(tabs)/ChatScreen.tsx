@@ -1,93 +1,173 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
-  Image,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 
-import QuicheImageLocal from "../../assets/QuicheEspinafre.jpg";
+import { useAuth } from "@/hooks/useAuth";
+import { useChat } from "@/hooks/useChat";
+import { formatDate, getFoodStatusLabel } from "@/utils/foodDisplay";
 
-const ChatScreen = () => {
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {/* Cabeçalho "Mr. Bot" */}
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Mr.Bot</Text>
-          <View style={styles.headerIcons}>
-            <MaterialCommunityIcons
-              name="minus"
-              size={24}
-              color="black"
-              style={styles.iconMargin}
-            />
-            <MaterialCommunityIcons name="close" size={24} color="black" />
+export default function ChatScreen() {
+  const { isAuthenticated, loading: authLoading, signInWithGoogle } = useAuth();
+  const { messages, loading, error, sendMessage, clear } = useChat();
+  const [input, setInput] = useState("");
+  const scrollRef = useRef<ScrollView>(null);
+
+  const handleSend = async () => {
+    const message = input.trim();
+    if (!message) return;
+    setInput("");
+    await sendMessage(message);
+    requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
+  };
+
+  const renderAssistantDetails = (messageId: string, message: (typeof messages)[number]) => (
+    <View>
+      {message.warnings?.map((warning, index) => (
+        <Text key={`${messageId}-warning-${index}`} style={styles.detailText}>
+          Aviso: {warning}
+        </Text>
+      ))}
+
+      {message.prioritizedFoods?.map((food) => (
+        <Text key={`${messageId}-food-${food.id}`} style={styles.detailText}>
+          Prioridade: {food.name} - {getFoodStatusLabel(food)} - {formatDate(food.expirationDate)}
+        </Text>
+      ))}
+
+      {message.recipes?.map((recipe, index) => (
+        <View key={`${messageId}-recipe-${index}`} style={styles.recipeBox}>
+          <Text style={styles.recipeTitle}>{recipe.title ?? recipe.name ?? "Ideia de receita"}</Text>
+          {recipe.description ? <Text style={styles.recipeText}>{recipe.description}</Text> : null}
+          {recipe.ingredients?.length ? (
+            <Text style={styles.recipeText}>Ingredientes: {recipe.ingredients.join(", ")}</Text>
+          ) : null}
+        </View>
+      ))}
+    </View>
+  );
+
+  const renderBody = () => {
+    if (authLoading) {
+      return (
+        <View style={styles.stateContainer}>
+          <ActivityIndicator color="#FFA500" />
+        </View>
+      );
+    }
+
+    if (!isAuthenticated) {
+      return (
+        <View style={styles.stateContainer}>
+          <Text style={styles.stateText}>Entre com Google para conversar com a IA.</Text>
+          <TouchableOpacity style={styles.stateButton} onPress={signInWithGoogle}>
+            <Text style={styles.stateButtonText}>Entrar com Google</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (messages.length === 0) {
+      return (
+        <View style={styles.emptyChat}>
+          <Text style={styles.stateText}>Pergunte sobre receitas, validade ou como priorizar seus alimentos.</Text>
+        </View>
+      );
+    }
+
+    return messages.map((message) => {
+      const isUser = message.role === "user";
+
+      return (
+        <View
+          key={message.id}
+          style={isUser ? styles.userBubbleWrapper : styles.botBubbleWrapper}
+        >
+          <View style={isUser ? styles.userBubble : styles.botBubble}>
+            <Text style={styles.messageText}>{message.content}</Text>
+            {!isUser ? renderAssistantDetails(message.id, message) : null}
           </View>
         </View>
+      );
+    });
+  };
 
-        {/* Área de Mensagens */}
-        <ScrollView contentContainerStyle={styles.messagesContainer}>
-          {/* Mensagem do Usuário */}
-          <View style={styles.userBubbleWrapper}>
-            <View style={styles.userBubble}>
-              <Text style={styles.userText}>
-                Oi! Quais alimentos estão perto de vencer aí na minha geladeira?
-              </Text>
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Mr.Bot</Text>
+          <TouchableOpacity onPress={clear}>
+            <MaterialCommunityIcons name="delete-outline" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={styles.messagesContainer}
+          onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+        >
+          {renderBody()}
+          {loading ? (
+            <View style={styles.botBubbleWrapper}>
+              <View style={styles.botBubble}>
+                <ActivityIndicator color="#FFA500" />
+              </View>
             </View>
-          </View>
-
-          {/* Mensagem do Bot */}
-          <View style={styles.botBubbleWrapper}>
-            <View style={styles.botBubble}>
-              <Text style={styles.botText}>Olá, ! 🌿</Text>
-              <Text style={styles.botText}>
-                O espinafre e os cogumelos estão próximos da validade. Que tal
-                aproveitar e fazer uma quiche de espinafre e cogumelos? Uma
-                opção deliciosa e sem desperdício! 🧑‍🍳
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.imageContainer}>
-            <Image source={QuicheImageLocal} style={styles.suggestionImage} />
-          </View>
+          ) : null}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
         </ScrollView>
 
-        {/* Campo de Entrada de Mensagem */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.textInput}
             placeholder="Mensagem..."
             placeholderTextColor="#888"
+            value={input}
+            onChangeText={setInput}
+            editable={isAuthenticated && !loading}
+            onSubmitEditing={handleSend}
           />
+          <TouchableOpacity
+            style={[styles.sendButton, (!input.trim() || loading) && styles.sendButtonDisabled]}
+            onPress={handleSend}
+            disabled={!input.trim() || loading}
+          >
+            <MaterialCommunityIcons name="send" size={22} color="black" />
+          </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+}
 
-// Estilos
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F5F5DC", // Cor de fundo do corpo do chat (clara)
+    backgroundColor: "#F5F5DC",
   },
   container: {
     flex: 1,
-    backgroundColor: "#F5F5DC", // Cor de fundo do corpo do chat (clara)
+    backgroundColor: "#F5F5DC",
   },
-
-  // --- Estilos do Cabeçalho ---
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FFA500", // Laranja do cabeçalho
+    backgroundColor: "#FFA500",
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderBottomWidth: 1,
@@ -98,37 +178,50 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
-  headerIcons: {
-    flexDirection: "row",
-  },
-  iconMargin: {
-    marginRight: 15,
-  },
-
-  // --- Estilos da Área de Mensagens ---
   messagesContainer: {
     padding: 10,
+    flexGrow: 1,
   },
-
-  // --- Balão do Usuário (Direita) ---
+  stateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 24,
+  },
+  emptyChat: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  stateText: {
+    color: "#4b5563",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  stateButton: {
+    backgroundColor: "#FFA500",
+    borderRadius: 10,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  stateButtonText: {
+    color: "black",
+    fontWeight: "700",
+  },
   userBubbleWrapper: {
     flexDirection: "row",
     justifyContent: "flex-end",
     marginBottom: 10,
   },
   userBubble: {
-    backgroundColor: "#D1D1D1", // Cinza claro
+    backgroundColor: "#D1D1D1",
     borderRadius: 15,
-    borderBottomRightRadius: 2, // Ajuste para o "canto"
-    maxWidth: "80%",
+    borderBottomRightRadius: 2,
+    maxWidth: "82%",
     padding: 10,
   },
-  userText: {
-    fontSize: 16,
-    color: "black",
-  },
-
-  // --- Balão do Bot (Esquerda) ---
   botBubbleWrapper: {
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -137,38 +230,49 @@ const styles = StyleSheet.create({
   botBubble: {
     backgroundColor: "#EBEBEB",
     borderRadius: 15,
-    borderBottomLeftRadius: 2, // Ajuste para o "canto"
-    maxWidth: "80%",
+    borderBottomLeftRadius: 2,
+    maxWidth: "86%",
     padding: 10,
   },
-  botText: {
+  messageText: {
     fontSize: 16,
     color: "black",
   },
-
-  // --- Imagem Sugerida ---
-  imageContainer: {
-    alignSelf: "flex-start", // Alinha a imagem na esquerda
-    marginVertical: 10,
+  detailText: {
+    marginTop: 8,
+    color: "#374151",
+    fontSize: 14,
+  },
+  recipeBox: {
+    marginTop: 10,
+    backgroundColor: "#fff7ed",
     borderRadius: 8,
-    borderWidth: 4, // Borda laranja em volta da imagem
-    borderColor: "#FFA500",
-    overflow: "hidden",
+    padding: 10,
   },
-  suggestionImage: {
-    // ESSENCIAL: Largura e altura definida para a imagem
-    width: 250,
-    height: 180,
-    resizeMode: "cover",
+  recipeTitle: {
+    fontWeight: "800",
+    color: "#7c2d12",
+    marginBottom: 4,
   },
-
-  // --- Campo de Entrada ---
+  recipeText: {
+    color: "#7c2d12",
+    fontSize: 14,
+  },
+  errorText: {
+    color: "#b91c1c",
+    textAlign: "center",
+    marginVertical: 8,
+  },
   inputContainer: {
     padding: 10,
-    backgroundColor: "#F5F5DC", // Cor de fundo do corpo do chat (clara)
+    backgroundColor: "#F5F5DC",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   textInput: {
-    height: 45,
+    flex: 1,
+    minHeight: 45,
     backgroundColor: "white",
     borderRadius: 25,
     paddingHorizontal: 15,
@@ -176,6 +280,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#CCC",
   },
+  sendButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: "#FFA500",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sendButtonDisabled: {
+    opacity: 0.5,
+  },
 });
-
-export default ChatScreen;
