@@ -1,32 +1,38 @@
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
-import { TamaguiProvider, Theme } from "tamagui";
+import { TamaguiProvider, Theme, YStack } from "tamagui";
 
 import { AppPreferencesProvider, useAppPreferences } from "@/src/shared/theme";
-import { AppErrorBoundary } from "@/src/shared/ui";
+import { AppErrorBoundary, SkeletonState } from "@/src/shared/ui";
 import tamaguiConfig from "@/tamagui.config";
 
 function RootStack() {
-  const { colorScheme } = useAppPreferences();
+  const { colorScheme, colors, isReady } = useAppPreferences();
 
   return (
     <Theme name={colorScheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen name="inventory" options={{ headerShown: false }} />
-        <Stack.Screen name="refrigerator" options={{ headerShown: false }} />
-        <Stack.Screen name="freezer" options={{ headerShown: false }} />
-        <Stack.Screen name="pantry" options={{ headerShown: false }} />
-        <Stack.Screen name="scan" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
-      </Stack>
+      {!isReady ? (
+        <YStack style={{ backgroundColor: colors.background, flex: 1 }}>
+          <SkeletonState />
+        </YStack>
+      ) : (
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen name="inventory" options={{ headerShown: false }} />
+          <Stack.Screen name="refrigerator" options={{ headerShown: false }} />
+          <Stack.Screen name="freezer" options={{ headerShown: false }} />
+          <Stack.Screen name="pantry" options={{ headerShown: false }} />
+          <Stack.Screen name="scan" options={{ headerShown: false }} />
+          <Stack.Screen name="profile" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+        </Stack>
+      )}
     </Theme>
   );
 }

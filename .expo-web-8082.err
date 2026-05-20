@@ -75,3 +75,42 @@
   renderElement (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6170:34)
   retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6495:52)
   renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6464:37)
+"shadow*" style props are deprecated. Use "boxShadow".
+"shadow*" style props are deprecated. Use "boxShadow".
+λ  WARN  props.pointerEvents is deprecated. Use style.pointerEvents 
+  console.warn (C:\Users\wende\wise\node_modules\expo\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
+  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
+  createDOMProps (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\createDOMProps\index.js:805:13)
+  createElement (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\createElement\index.js:23:32)
+  View (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\View\index.js:111:23)
+  Object.replayElement [as react-stack-bottom-frame] (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server.node.development.js:715:18)
+  parentFlushed (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5675:14)
+  renderElement (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6399:27)
+  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6735:15)
+  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6693:43)
+λ  WARN  props.pointerEvents is deprecated. Use style.pointerEvents 
+  console.warn (C:\Users\wende\wise\node_modules\expo\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
+  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
+  createDOMProps (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\createDOMProps\index.js:805:13)
+  createElement (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\createElement\index.js:23:32)
+  View (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\View\index.js:111:23)
+  Object.replayElement [as react-stack-bottom-frame] (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server.node.development.js:715:18)
+  parentFlushed (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5675:14)
+  renderElement (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6399:27)
+  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6735:15)
+  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6693:43)
+"shadow*" style props are deprecated. Use "boxShadow".
+"shadow*" style props are deprecated. Use "boxShadow".
+λ  WARN  props.pointerEvents is deprecated. Use style.pointerEvents 
+  console.warn (C:\Users\wende\wise\node_modules\expo\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
+  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
+  createDOMProps (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\createDOMProps\index.js:805:13)
+  createElement (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\createElement\index.js:23:32)
+  View (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\View\index.js:111:23)
+  Object.react-stack-bottom-frame (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server.node.development.js:879:17)
+  completedSegments (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5864:22)
+  renderElement (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6580:23)
+  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6960:5)
+  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6928:23)
+"shadow*" style props are deprecated. Use "boxShadow".
+"shadow*" style props are deprecated. Use "boxShadow".

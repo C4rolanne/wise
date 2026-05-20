@@ -236,7 +236,7 @@ export function AppShell({
 }: AppShellProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuProgress = useRef(new Animated.Value(0)).current;
-  const { width } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const { colorScheme, language, colors, toggleColorScheme, toggleLanguage } = useAppPreferences();
   const { t } = useTranslation();
   const isWide = width >= 960;
@@ -332,6 +332,8 @@ export function AppShell({
               shadowOffset: { width: 10, height: 0 },
               shadowOpacity: 0.08,
               shadowRadius: 24,
+              height,
+              minHeight: height,
               width: 264,
             }}
           >
@@ -428,7 +430,9 @@ export function AppShell({
               backgroundColor: colors.backgroundElevated,
               borderBottomRightRadius: appRadii.xl,
               borderTopRightRadius: appRadii.xl,
+              height,
               maxWidth: 320,
+              minHeight: height,
               transform: [{ translateX: sidebarTranslateX }],
               width: "82%",
             }}
