@@ -1,17 +1,35 @@
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import type { Session } from "@supabase/supabase-js";
+import { Platform } from "react-native";
 
 import { apiRequest } from "./api";
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { assertSupabaseConfigured, env } from "@/src/config/env";
+import { supabase } from "./supabase";
 import type { UserProfile } from "@/types/user";
 
 WebBrowser.maybeCompleteAuthSession();
+
+const authCallbackPath = "auth/callback";
 
 const getUrlParams = (url: string) => {
   const [withoutHash, hash] = url.split("#");
   const query = withoutHash.split("?")[1];
   return new URLSearchParams(hash ?? query ?? "");
+};
+
+const getCurrentWebOrigin = () => {
+  if (typeof window === "undefined") return "";
+  return window.location.origin;
+};
+
+const getAuthRedirectUrl = () => {
+  if (Platform.OS === "web") {
+    const webOrigin = env.appBaseUrl || getCurrentWebOrigin();
+    if (webOrigin) return `${webOrigin}/${authCallbackPath}`;
+  }
+
+  return Linking.createURL(authCallbackPath);
 };
 
 export const authService = {
@@ -27,11 +45,9 @@ export const authService = {
   },
 
   async signInWithGoogle(): Promise<Session | null> {
-    if (!isSupabaseConfigured) {
-      throw new Error("Configure EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY.");
-    }
+    assertSupabaseConfigured();
 
-    const redirectTo = Linking.createURL("auth/callback");
+    const redirectTo = getAuthRedirectUrl();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {

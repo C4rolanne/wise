@@ -1,12 +1,8 @@
-import { Platform } from "react-native";
-
+import { assertApiConfigured, env } from "@/src/config/env";
 import { supabase } from "@/services/supabase";
 import type { ApiErrorBody } from "@/types/api";
 
-const defaultApiUrl =
-  Platform.OS === "android" ? "http://10.0.2.2:3001/api" : "http://localhost:3001/api";
-
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? defaultApiUrl;
+export const API_BASE_URL = env.apiBaseUrl;
 
 export class ApiError extends Error {
   status: number;
@@ -29,6 +25,8 @@ interface ApiRequestOptions extends Omit<RequestInit, "body"> {
 }
 
 const buildUrl = (path: string, query?: Record<string, QueryValue>) => {
+  assertApiConfigured();
+
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const url = new URL(`${API_BASE_URL}${normalizedPath}`);
 
