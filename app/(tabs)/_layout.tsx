@@ -9,27 +9,23 @@ export default function TabsLayout() {
         tabBarActiveTintColor: "black",
         tabBarInactiveTintColor: "grey",
         tabBarStyle: {
-          backgroundColor: "#FFB74D",
-          borderTopWidth: 0,
-          position: "absolute",
-          elevation: 0,
-          height: 80,
-          paddingBottom: 8,
+          display: "none",
         },
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="dashboard"
         options={{
+          title: "Inicio",
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="ChatScreen"
+        name="assistant"
         options={{
-          title: "Chat",
+          title: "Assistente",
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="chatbubble-sharp" size={size} color={color} />
           ),

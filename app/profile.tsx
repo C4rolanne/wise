@@ -1,22 +1,21 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Image } from "react-native";
+import { Text, YStack } from "tamagui";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/hooks/useUser";
+import { useTranslation } from "@/src/shared/i18n";
+import { AppShell } from "@/src/shared/navigation";
+import { appRadii, useAppPreferences } from "@/src/shared/theme";
+import { AppButton, AppCard, FormField, ScreenContainer, StateView } from "@/src/shared/ui";
 
 export default function ProfileScreen() {
   const { isAuthenticated, loading: authLoading, signInWithGoogle, signOut } = useAuth();
   const { user, loading, saving, error, success, update } = useUser();
+  const { t } = useTranslation();
+  const { colors } = useAppPreferences();
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -24,14 +23,14 @@ export default function ProfileScreen() {
   }, [user]);
 
   useEffect(() => {
-    if (success) Alert.alert("Sucesso", success);
-  }, [success]);
+    if (success) Alert.alert(t("alerts.success"), success);
+  }, [success, t]);
 
   const handleSave = async () => {
     try {
       await update({ name, fullName: name });
     } catch (err) {
-      Alert.alert("Erro", err instanceof Error ? err.message : "Nao foi possivel atualizar o perfil.");
+      Alert.alert(t("alerts.error"), err instanceof Error ? err.message : t("alerts.profileUpdateError"));
     }
   };
 
@@ -40,159 +39,82 @@ export default function ProfileScreen() {
       await signOut();
       router.replace("/");
     } catch (err) {
-      Alert.alert("Erro", err instanceof Error ? err.message : "Nao foi possivel sair.");
+      Alert.alert(t("alerts.error"), err instanceof Error ? err.message : t("alerts.signOutError"));
     }
   };
 
   if (authLoading || loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator color="#FF9800" />
-      </View>
+      <AppShell scroll title={t("profile.title")} subtitle={t("profile.subtitle")} contentMaxWidth={620}>
+        <StateView loading title={t("profile.loading")} />
+      </AppShell>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.stateText}>Entre com Google para acessar seu perfil.</Text>
-        <TouchableOpacity style={styles.primaryButton} onPress={signInWithGoogle}>
-          <Text style={styles.primaryButtonText}>Entrar com Google</Text>
-        </TouchableOpacity>
-      </View>
+      <ScreenContainer>
+        <StateView
+          title={t("auth.requiredTitle")}
+          description={t("auth.requiredProfileDescription")}
+          actionLabel={t("actions.signInGoogle")}
+          onAction={signInWithGoogle}
+        />
+      </ScreenContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Perfil</Text>
-      </View>
+    <AppShell scroll title={t("profile.title")} subtitle={t("profile.subtitle")} contentMaxWidth={620}>
+        <AppCard gap="$4">
+          <YStack gap="$3" style={{ alignItems: "center" }}>
+            {user?.avatarUrl || user?.picture ? (
+              <Image
+                source={{ uri: user.avatarUrl ?? user.picture ?? "" }}
+                style={{ borderRadius: 48, height: 96, width: 96 }}
+              />
+            ) : (
+              <YStack
+                style={{
+                  alignItems: "center",
+                  backgroundColor: colors.primarySoft,
+                  borderRadius: appRadii.pill,
+                  height: 96,
+                  justifyContent: "center",
+                  width: 96,
+                }}
+              >
+                <Text fontSize="$8" fontWeight="900" style={{ color: colors.text }}>
+                  {(name || user?.email || "U").charAt(0).toUpperCase()}
+                </Text>
+              </YStack>
+            )}
 
-      <View style={styles.content}>
-        {user?.avatarUrl || user?.picture ? (
-          <Image source={{ uri: user.avatarUrl ?? user.picture ?? "" }} style={styles.avatar} />
-        ) : (
-          <View style={styles.avatarFallback}>
-            <Text style={styles.avatarText}>{(name || user?.email || "U").charAt(0).toUpperCase()}</Text>
-          </View>
-        )}
+            <Text fontSize="$3" style={{ color: colors.textMuted, textAlign: "center" }}>
+              {user?.email}
+            </Text>
+          </YStack>
 
-        <Text style={styles.email}>{user?.email}</Text>
+          <FormField label={t("form.name")} value={name} placeholder={t("form.profileNamePlaceholder")} onChangeText={setName} />
 
-        <Text style={styles.label}>Nome</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Seu nome" />
+          {error ? (
+            <Text fontSize="$3" style={{ color: colors.danger, textAlign: "center" }}>
+              {error}
+            </Text>
+          ) : null}
 
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <AppButton
+            leftIcon={<MaterialCommunityIcons name="content-save-outline" size={18} color={colors.primaryText} />}
+            loading={saving}
+            onPress={handleSave}
+          >
+            {t("actions.saveProfile")}
+          </AppButton>
 
-        <TouchableOpacity style={styles.primaryButton} onPress={handleSave} disabled={saving}>
-          <Text style={styles.primaryButtonText}>{saving ? "Salvando..." : "Salvar perfil"}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleSignOut}>
-          <Text style={styles.secondaryButtonText}>Sair</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <AppButton leftIcon={<MaterialCommunityIcons name="logout" size={18} color={colors.primaryText} />} tone="danger" onPress={handleSignOut}>
+            {t("actions.signOut")}
+          </AppButton>
+        </AppCard>
+    </AppShell>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF3E0",
-  },
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    gap: 12,
-    backgroundColor: "#FFF3E0",
-  },
-  header: {
-    backgroundColor: "#FFB74D",
-    paddingTop: 54,
-    paddingBottom: 22,
-    paddingHorizontal: 20,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "black",
-  },
-  content: {
-    padding: 20,
-    gap: 12,
-    alignItems: "stretch",
-  },
-  avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignSelf: "center",
-  },
-  avatarFallback: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: "#FF9800",
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarText: {
-    fontSize: 38,
-    fontWeight: "800",
-    color: "black",
-  },
-  email: {
-    textAlign: "center",
-    color: "#4b5563",
-    marginBottom: 12,
-  },
-  label: {
-    fontWeight: "800",
-    color: "#374151",
-  },
-  input: {
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  stateText: {
-    color: "#4b5563",
-    textAlign: "center",
-    fontSize: 16,
-  },
-  primaryButton: {
-    backgroundColor: "#FF9800",
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: "center",
-    paddingHorizontal: 18,
-  },
-  primaryButtonText: {
-    color: "black",
-    fontWeight: "800",
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: "#ef4444",
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  secondaryButtonText: {
-    color: "#b91c1c",
-    fontWeight: "800",
-  },
-  errorText: {
-    color: "#b91c1c",
-    textAlign: "center",
-  },
-});

@@ -1,28 +1,25 @@
 export type FoodCategory =
-  | "carne"
-  | "fruta"
-  | "vegetal"
-  | "fruto-do-mar"
-  | "massas"
-  | "doce"
-  | "laticinio"
-  | "condimentos"
-  | "graos"
-  | "bebidas"
-  | "ovos"
-  | "outros"
+  | "meat"
+  | "fruit"
+  | "vegetable"
+  | "seafood"
+  | "pasta"
+  | "sweets"
+  | "dairy"
+  | "condiments"
+  | "grains"
+  | "beverages"
+  | "eggs"
+  | "other"
   | string;
 
-export type FoodStorage = "geladeira" | "freezer" | "despensa";
+export type FoodStorage = "refrigerator" | "freezer" | "pantry";
 
 export type FoodValidityStatus =
   | "expired"
   | "expires_today"
   | "expiring_soon"
   | "valid"
-  | "vencido"
-  | "vence_hoje"
-  | "proximo"
   | "ok"
   | string;
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { foodsService } from "@/services/foods.service";
+import { inventoryService } from "@/src/features/inventory/services/inventoryService";
 import type { CreateFoodInput, Food, FoodFilters, UpdateFoodInput } from "@/types/food";
 
 const getErrorMessage = (error: unknown) =>
@@ -20,7 +20,7 @@ export function useFoods(filters: FoodFilters = {}) {
     setError(null);
 
     try {
-      setFoods(await foodsService.list(stableFilters));
+      setFoods(await inventoryService.list(stableFilters));
     } catch (err) {
       setError(getErrorMessage(err));
       setFoods([]);
@@ -40,7 +40,7 @@ export function useFoods(filters: FoodFilters = {}) {
       setSuccess(null);
 
       try {
-        const createdFood = await foodsService.create(input);
+        const createdFood = await inventoryService.create(input);
         setSuccess("Alimento criado");
         await refresh();
         return createdFood;
@@ -61,7 +61,7 @@ export function useFoods(filters: FoodFilters = {}) {
       setSuccess(null);
 
       try {
-        const updatedFood = await foodsService.update(id, input);
+        const updatedFood = await inventoryService.update(id, input);
         setSuccess("Alimento atualizado");
         await refresh();
         return updatedFood;
@@ -82,7 +82,7 @@ export function useFoods(filters: FoodFilters = {}) {
       setSuccess(null);
 
       try {
-        await foodsService.remove(id);
+        await inventoryService.remove(id);
         setSuccess("Alimento excluido");
         await refresh();
       } catch (err) {

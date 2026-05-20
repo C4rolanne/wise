@@ -1,306 +1,153 @@
-import { Picker } from "@react-native-picker/picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Image } from "react-native";
+import { Text, XStack, YStack } from "tamagui";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useFoods } from "@/hooks/useFoods";
 import { useImageAnalysis } from "@/hooks/useImageAnalysis";
-import type { CreateFoodInput, FoodStorage } from "@/types/food";
-import { categories, getCategoryName } from "@/utils/foodDisplay";
-
-type ReviewForm = {
-  name: string;
-  category: string;
-  storage: FoodStorage;
-  manufacturingDate: string;
-  expirationDate: string;
-};
-
-const emptyReviewForm: ReviewForm = {
-  name: "",
-  category: "outros",
-  storage: "geladeira",
-  manufacturingDate: "",
-  expirationDate: "",
-};
+import {
+  emptyFoodItemEditorForm,
+  FoodItemEditorForm,
+  type FoodItemEditorFormData,
+  toCreateFoodPayload,
+} from "@/src/features/inventory/components";
+import { useTranslation } from "@/src/shared/i18n";
+import { AppShell } from "@/src/shared/navigation";
+import { appRadii, useAppPreferences } from "@/src/shared/theme";
+import { AppButton, AppCard, ScreenContainer, StateView } from "@/src/shared/ui";
+import type { FoodStorage } from "@/types/food";
 
 export default function ScanScreen() {
   const { isAuthenticated, loading: authLoading, signInWithGoogle } = useAuth();
+  const { t } = useTranslation();
+  const { colors } = useAppPreferences();
   const { createFood, saving } = useFoods();
   const { imageUri, suggestion, loading, error, takePhoto, pickImage, reset } = useImageAnalysis();
-  const [form, setForm] = useState<ReviewForm>(emptyReviewForm);
+  const [form, setForm] = useState<FoodItemEditorFormData>(emptyFoodItemEditorForm);
 
   useEffect(() => {
     if (!suggestion) return;
 
     setForm({
       name: suggestion.name ?? "",
-      category: suggestion.category ?? "outros",
-      storage: (suggestion.storage as FoodStorage | undefined) ?? "geladeira",
+      category: suggestion.category ?? "other",
+      storage: (suggestion.storage as FoodStorage | undefined) ?? "refrigerator",
       manufacturingDate: suggestion.manufacturingDate ?? "",
       expirationDate: suggestion.expirationDate ?? "",
     });
   }, [suggestion]);
 
-  const updateField = (field: keyof ReviewForm, value: string) => {
+  const updateField = (field: keyof FoodItemEditorFormData, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.category || !form.storage || !form.expirationDate) {
-      Alert.alert("Atencao", "Revise e preencha nome, categoria, local e validade antes de salvar.");
+      Alert.alert(t("alerts.attention"), t("scan.saveValidation"));
       return;
     }
 
-    const payload: CreateFoodInput = {
-      name: form.name.trim(),
-      category: form.category,
-      storage: form.storage,
-      manufacturingDate: form.manufacturingDate || null,
-      expirationDate: form.expirationDate,
-    };
-
     try {
-      await createFood(payload);
-      Alert.alert("Sucesso", "Alimento salvo.");
+      await createFood(toCreateFoodPayload(form));
+      Alert.alert(t("alerts.success"), t("alerts.foodSaved"));
       reset();
-      setForm(emptyReviewForm);
-      router.replace("/FoodCRUD");
+      setForm(emptyFoodItemEditorForm);
+      router.replace("/inventory");
     } catch (err) {
-      Alert.alert("Erro", err instanceof Error ? err.message : "Nao foi possivel salvar.");
+      Alert.alert(t("alerts.error"), err instanceof Error ? err.message : t("alerts.saveError"));
     }
   };
 
   if (authLoading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator color="#FF9800" />
-      </View>
+      <AppShell scroll title={t("scan.title")} subtitle={t("scan.subtitle")} contentMaxWidth={760}>
+        <StateView loading title={t("home.loadingSession")} />
+      </AppShell>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.stateText}>Entre com Google para analisar imagens.</Text>
-        <TouchableOpacity style={styles.primaryButton} onPress={signInWithGoogle}>
-          <Text style={styles.primaryButtonText}>Entrar com Google</Text>
-        </TouchableOpacity>
-      </View>
+      <ScreenContainer>
+        <StateView
+          title={t("auth.requiredTitle")}
+          description={t("auth.requiredScanDescription")}
+          actionLabel={t("actions.signInGoogle")}
+          onAction={signInWithGoogle}
+        />
+      </ScreenContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Analisar alimento</Text>
-      </View>
+    <AppShell
+      scroll
+      title={t("scan.title")}
+      subtitle={t("scan.subtitle")}
+      contentMaxWidth={760}
+    >
+        <XStack gap="$3" style={{ flexDirection: "row" }}>
+          <AppButton
+            flex={1}
+            leftIcon={<MaterialCommunityIcons name="camera-outline" size={18} color={colors.primaryText} />}
+            loading={loading}
+            onPress={takePhoto}
+          >
+            {t("actions.takePhoto")}
+          </AppButton>
+          <AppButton
+            flex={1}
+            leftIcon={<MaterialCommunityIcons name="image-plus" size={18} color={colors.text} />}
+            tone="secondary"
+            onPress={pickImage}
+          >
+            {t("actions.chooseImage")}
+          </AppButton>
+        </XStack>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.primaryButton} onPress={takePhoto} disabled={loading}>
-            <Text style={styles.primaryButtonText}>Tirar foto</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton} onPress={pickImage} disabled={loading}>
-            <Text style={styles.secondaryButtonText}>Escolher imagem</Text>
-          </TouchableOpacity>
-        </View>
+        {loading ? <StateView loading title={t("scan.loadingTitle")} description={t("scan.loadingDescription")} /> : null}
 
-        {loading ? (
-          <View style={styles.loadingBox}>
-            <ActivityIndicator color="#FF9800" />
-            <Text style={styles.stateText}>Enviando imagem para IA...</Text>
-          </View>
+        {error ? (
+          <Text fontSize="$3" style={{ color: colors.danger, textAlign: "center" }}>
+            {error}
+          </Text>
         ) : null}
 
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {imageUri ? <Image source={{ uri: imageUri }} style={styles.previewImage} /> : null}
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={{ backgroundColor: colors.surfaceAlt, borderRadius: appRadii.lg, height: 260, width: "100%" }}
+          />
+        ) : null}
 
         {suggestion ? (
-          <View style={styles.reviewBox}>
-            <Text style={styles.sectionTitle}>Revisar sugestao</Text>
-            {typeof suggestion.confidence === "number" ? (
-              <Text style={styles.metaText}>Confianca: {Math.round(suggestion.confidence * 100)}%</Text>
-            ) : null}
-            {suggestion.notes ? <Text style={styles.metaText}>{suggestion.notes}</Text> : null}
-
-            <Text style={styles.label}>Nome</Text>
-            <TextInput
-              style={styles.input}
-              value={form.name}
-              onChangeText={(value) => updateField("name", value)}
-              placeholder="Nome do alimento"
-            />
-
-            <Text style={styles.label}>Categoria</Text>
-            <View style={styles.pickerBox}>
-              <Picker selectedValue={form.category} onValueChange={(value) => updateField("category", value)}>
-                {categories.map((category) => (
-                  <Picker.Item key={category} label={getCategoryName(category)} value={category} />
-                ))}
-              </Picker>
-            </View>
-
-            <Text style={styles.label}>Local</Text>
-            <View style={styles.pickerBox}>
-              <Picker selectedValue={form.storage} onValueChange={(value) => updateField("storage", value)}>
-                <Picker.Item label="Geladeira" value="geladeira" />
-                <Picker.Item label="Freezer" value="freezer" />
-                <Picker.Item label="Despensa" value="despensa" />
-              </Picker>
-            </View>
-
-            <Text style={styles.label}>Data de fabricacao</Text>
-            <TextInput
-              style={styles.input}
-              value={form.manufacturingDate}
-              onChangeText={(value) => updateField("manufacturingDate", value)}
-              placeholder="AAAA-MM-DD"
-            />
-
-            <Text style={styles.label}>Data de validade</Text>
-            <TextInput
-              style={styles.input}
-              value={form.expirationDate}
-              onChangeText={(value) => updateField("expirationDate", value)}
-              placeholder="AAAA-MM-DD"
-            />
-
-            <TouchableOpacity style={styles.primaryButton} onPress={handleSave} disabled={saving}>
-              <Text style={styles.primaryButtonText}>
-                {saving ? "Salvando..." : "Confirmar e salvar"}
+          <AppCard gap="$4">
+            <YStack gap="$1">
+              <Text fontSize="$6" fontWeight="900" style={{ color: colors.text }}>
+                {t("scan.reviewSuggestion")}
               </Text>
-            </TouchableOpacity>
-          </View>
+              {typeof suggestion.confidence === "number" ? (
+                <Text fontSize="$3" style={{ color: colors.textMuted }}>
+                  {t("scan.confidence")}: {Math.round(suggestion.confidence * 100)}%
+                </Text>
+              ) : null}
+              {suggestion.notes ? (
+                <Text fontSize="$3" style={{ color: colors.textMuted }}>
+                  {suggestion.notes}
+                </Text>
+              ) : null}
+            </YStack>
+
+            <FoodItemEditorForm value={form} saving={saving} onChange={updateField} onSubmit={handleSave} />
+          </AppCard>
         ) : (
-          <Text style={styles.stateText}>A IA sugerira os dados antes de qualquer alimento ser salvo.</Text>
+          <StateView
+            title={t("scan.emptyTitle")}
+            description={t("scan.emptyDescription")}
+          />
         )}
-      </ScrollView>
-    </View>
+    </AppShell>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF3E0",
-  },
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    gap: 12,
-    backgroundColor: "#FFF3E0",
-  },
-  header: {
-    backgroundColor: "#FFB74D",
-    paddingTop: 54,
-    paddingBottom: 22,
-    paddingHorizontal: 20,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "black",
-  },
-  content: {
-    padding: 20,
-    gap: 16,
-  },
-  actions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  primaryButton: {
-    flex: 1,
-    backgroundColor: "#FF9800",
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: "center",
-    paddingHorizontal: 18,
-  },
-  primaryButtonText: {
-    color: "black",
-    fontWeight: "800",
-  },
-  secondaryButton: {
-    flex: 1,
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#FF9800",
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  secondaryButtonText: {
-    color: "#7c2d12",
-    fontWeight: "800",
-  },
-  loadingBox: {
-    alignItems: "center",
-    gap: 8,
-  },
-  stateText: {
-    color: "#4b5563",
-    textAlign: "center",
-    fontSize: 16,
-  },
-  errorText: {
-    color: "#b91c1c",
-    textAlign: "center",
-  },
-  previewImage: {
-    width: "100%",
-    height: 240,
-    borderRadius: 12,
-    backgroundColor: "#f3f4f6",
-  },
-  reviewBox: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 16,
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#1f2937",
-  },
-  metaText: {
-    color: "#6b7280",
-  },
-  label: {
-    color: "#374151",
-    fontWeight: "800",
-    marginTop: 8,
-  },
-  input: {
-    backgroundColor: "#f9fafb",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  pickerBox: {
-    backgroundColor: "#f9fafb",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-});

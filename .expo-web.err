@@ -13,7 +13,6 @@ The following packages should be updated for best compatibility with the install
   expo-system-ui@6.0.8 - expected version: ~6.0.9
   expo-web-browser@15.0.9 - expected version: ~15.0.11
 Your project may not work correctly until you install the expected versions of the packages.
-"shadow*" style props are deprecated. Use "boxShadow".
 λ  WARN  Image: style.resizeMode is deprecated. Please use props.resizeMode. 
   console.warn (C:\Users\wende\wise\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
   warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
@@ -25,39 +24,24 @@ Your project may not work correctly until you install the expected versions of t
   retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5899:31)
   renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5849:11)
   renderNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6306:18)
-"shadow*" style props are deprecated. Use "boxShadow".
-λ  WARN  Image: style.resizeMode is deprecated. Please use props.resizeMode. 
-  console.warn (C:\Users\wende\wise\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
-  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
-  extractNonStandardStyleProps (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:59:13)
-  Component (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:181:31)
-  Object.callComponentInDEV [as react-stack-bottom-frame] (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:8970:18)
-  renderWithHooks (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:4699:19)
-  run (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5539:39)
-  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5899:31)
-  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5849:11)
-  renderNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6306:18)
-"shadow*" style props are deprecated. Use "boxShadow".
-λ  WARN  Image: style.resizeMode is deprecated. Please use props.resizeMode. 
-  console.warn (C:\Users\wende\wise\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
-  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
-  extractNonStandardStyleProps (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:59:13)
-  Component (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:181:31)
-  Object.callComponentInDEV [as react-stack-bottom-frame] (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:8970:18)
-  renderWithHooks (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:4699:19)
-  run (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5539:39)
-  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5899:31)
-  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5849:11)
-  renderNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6306:18)
-"shadow*" style props are deprecated. Use "boxShadow".
-λ  WARN  Image: style.resizeMode is deprecated. Please use props.resizeMode. 
-  console.warn (C:\Users\wende\wise\node_modules\@expo\cli\src\start\server\serverLogLikeMetro.ts:161:21)
-  warnOnce (C:\Users\wende\wise\node_modules\react-native-web\dist\modules\warnOnce\index.js:24:13)
-  extractNonStandardStyleProps (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:59:13)
-  Component (C:\Users\wende\wise\node_modules\react-native-web\dist\exports\Image\index.js:181:31)
-  Object.callComponentInDEV [as react-stack-bottom-frame] (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:8970:18)
-  renderWithHooks (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:4699:19)
-  run (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5539:39)
-  retryNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5899:31)
-  renderNodeDestructive (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:5849:11)
-  renderNode (C:\Users\wende\wise\node_modules\react-dom\cjs\react-dom-server-legacy.node.development.js:6306:18)
+Tamagui: Using global config fallback. This may indicate duplicate tamagui instances (e.g., from Vite SSR bundling). This is handled automatically, but may cause issues.
+C:\Users\wende\wise\node_modules\@expo\cli\build\src\utils\errors.js:130
+    throw error;
+    ^
+
+Error: Cannot find module 'C:\Users\wende\wise\node_modules\@expo\metro\metro\lib\formatBundlingError.js'
+    at createEsmNotFoundErr (node:internal/modules/cjs/loader:1419:15)
+    at finalizeEsmResolution (node:internal/modules/cjs/loader:1408:15)
+    at resolveExports (node:internal/modules/cjs/loader:650:14)
+    at Function._findPath (node:internal/modules/cjs/loader:717:31)
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1369:27)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24) {
+  code: 'MODULE_NOT_FOUND',
+  path: 'C:\\Users\\wende\\wise\\node_modules\\@expo\\metro'
+}
+
+Node.js v22.19.0

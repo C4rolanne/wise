@@ -1,5 +1,5 @@
-import { FoodStorageScreen } from "@/components/FoodStorageScreen";
+import { StorageInventoryScreen } from "@/src/features/inventory/screens";
 
 export default function FreezerScreen() {
-  return <FoodStorageScreen storage="freezer" emptyText="Nenhum alimento cadastrado no Freezer" />;
+  return <StorageInventoryScreen storage="freezer" />;
 }

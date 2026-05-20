@@ -1,47 +1,53 @@
+import type { TranslationKey } from "@/src/shared/i18n";
 import type { Food, FoodStorage } from "@/types/food";
 
 export const storageLabels: Record<FoodStorage, string> = {
-  geladeira: "Geladeira",
+  refrigerator: "Geladeira",
   freezer: "Freezer",
-  despensa: "Despensa",
+  pantry: "Despensa",
 };
 
 export const categories = [
-  "carne",
-  "fruta",
-  "vegetal",
-  "fruto-do-mar",
-  "massas",
-  "doce",
-  "laticinio",
-  "condimentos",
-  "graos",
-  "bebidas",
-  "ovos",
-  "outros",
+  "meat",
+  "fruit",
+  "vegetable",
+  "seafood",
+  "pasta",
+  "sweets",
+  "dairy",
+  "condiments",
+  "grains",
+  "beverages",
+  "eggs",
+  "other",
 ];
 
-export const getCategoryName = (category: string) => {
+type Translator = (key: TranslationKey) => string;
+
+export const getCategoryName = (category: string, t?: Translator) => {
+  const categoryKey = `categories.${category}` as TranslationKey;
+  if (t && categories.includes(category)) return t(categoryKey);
+
   const labels: Record<string, string> = {
-    carne: "Carne",
-    fruta: "Fruta",
-    vegetal: "Vegetal",
-    "fruto-do-mar": "Fruto do mar",
-    massas: "Massas",
-    doce: "Doce",
-    laticinio: "Laticinio",
-    condimentos: "Condimentos",
-    graos: "Graos",
-    bebidas: "Bebidas",
-    ovos: "Ovos",
-    outros: "Outros",
+    meat: "Carne",
+    fruit: "Fruta",
+    vegetable: "Vegetal",
+    seafood: "Fruto do mar",
+    pasta: "Massas",
+    sweets: "Doces",
+    dairy: "Laticinio",
+    condiments: "Condimentos",
+    grains: "Graos",
+    beverages: "Bebidas",
+    eggs: "Ovos",
+    other: "Outros",
   };
 
   return labels[category] ?? category;
 };
 
-export const formatDate = (dateString?: string | null) => {
-  if (!dateString) return "Nao informado";
+export const formatDate = (dateString?: string | null, notInformedLabel = "Nao informado") => {
+  if (!dateString) return notInformedLabel;
   const [date] = dateString.split("T");
   const [year, month, day] = date.split("-");
   if (!year || !month || !day) return dateString;
@@ -51,17 +57,17 @@ export const formatDate = (dateString?: string | null) => {
 export const getFoodStatusValue = (food: Food) =>
   food.validityStatus ?? food.expirationStatus ?? food.status ?? null;
 
-export const getFoodStatusLabel = (food: Food) => {
+export const getFoodStatusLabel = (food: Food, t?: Translator) => {
   if (food.statusLabel) return food.statusLabel;
 
   const status = getFoodStatusValue(food);
+  const statusKey = status ? (`status.${status}` as TranslationKey) : null;
+  if (statusKey && t) return t(statusKey);
+
   const labels: Record<string, string> = {
     expired: "Vencido",
-    vencido: "Vencido",
     expires_today: "Vence hoje",
-    vence_hoje: "Vence hoje",
     expiring_soon: "Proximo da validade",
-    proximo: "Proximo da validade",
     valid: "Valido",
     ok: "Valido",
   };
@@ -70,21 +76,5 @@ export const getFoodStatusLabel = (food: Food) => {
   if (typeof food.daysUntilExpiration === "number") {
     return `${food.daysUntilExpiration} dias`;
   }
-  return "Status indisponivel";
-};
-
-export const getFoodStatusColor = (food: Food) => {
-  const status = getFoodStatusValue(food);
-
-  if (status === "expired" || status === "vencido") return "#ef4444";
-  if (
-    status === "expires_today" ||
-    status === "vence_hoje" ||
-    status === "expiring_soon" ||
-    status === "proximo"
-  ) {
-    return "#f59e0b";
-  }
-  if (status === "valid" || status === "ok") return "#10b981";
-  return "#6b7280";
+  return t ? t("common.statusUnavailable") : "Status indisponivel";
 };
