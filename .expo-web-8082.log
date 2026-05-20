@@ -306,3 +306,31 @@ Web Bundled 38ms node_modules\expo-router\entry.js (1 module)
 Web Bundled 534ms node_modules\expo-router\entry.js (1 module)
 Web Bundled 389ms node_modules\expo-router\entry.js (1 module)
  LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 50ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 579ms node_modules\expo-router\entry.js (1 module)
+Web Bundled 52ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 125ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 1599ms node_modules\expo-router\entry.js (1 module)
+Web Bundled 55ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 37ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 638ms node_modules\expo-router\entry.js (1 module)
+Web Bundled 54ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 91ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 809ms node_modules\expo-router\entry.js (1 module)
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 69ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 1288ms node_modules\expo-router\entry.js (1 module)
+Web Bundled 43ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ Bundled 40ms node_modules\expo-router\node\render.js (1 module)
+Web Bundled 615ms node_modules\expo-router\entry.js (1 module)
+Web Bundled 58ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console

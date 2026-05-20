@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, usePathname, type Href } from "expo-router";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Modal, Pressable, ScrollView, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, XStack, YStack } from "tamagui";
@@ -84,13 +84,11 @@ function SidebarItem({
   index,
   isActive,
   onNavigate,
-  onSelect,
 }: {
   item: NavigationItem;
   index: number;
   isActive: boolean;
   onNavigate?: () => void;
-  onSelect: (index: number) => void;
 }) {
   const { t } = useTranslation();
   const { colors } = useAppPreferences();
@@ -104,12 +102,12 @@ function SidebarItem({
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
       onPress={() => {
-        onSelect(index);
         onNavigate?.();
         router.push(item.href);
       }}
       style={({ pressed }) => ({
         borderRadius: appRadii.md,
+        backgroundColor: isActive ? colors.primarySoft : isHovered ? colors.surfaceAlt : "transparent",
         cursor: "pointer",
         height: sidebarItemHeight,
         marginBottom: index === navigationItems.length - 1 ? 0 : sidebarItemGap,
@@ -141,38 +139,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const activeIndex = navigationItems.findIndex((item) =>
     item.matches.some((match) => pathname === match || pathname.endsWith(match)),
   );
-  const indicatorY = useRef(new Animated.Value(Math.max(activeIndex, 0) * (sidebarItemHeight + sidebarItemGap))).current;
-  const indicatorOpacity = useRef(new Animated.Value(activeIndex >= 0 ? 1 : 0)).current;
-
-  const moveIndicator = useCallback((index: number) => {
-    Animated.parallel([
-      Animated.spring(indicatorY, {
-        toValue: index * (sidebarItemHeight + sidebarItemGap),
-        damping: 22,
-        mass: 0.7,
-        stiffness: 190,
-        useNativeDriver: true,
-      }),
-      Animated.timing(indicatorOpacity, {
-        toValue: 1,
-        duration: 120,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [indicatorOpacity, indicatorY]);
-
-  useEffect(() => {
-    if (activeIndex < 0) {
-      Animated.timing(indicatorOpacity, {
-        toValue: 0,
-        duration: 120,
-        useNativeDriver: true,
-      }).start();
-      return;
-    }
-
-    moveIndicator(activeIndex);
-  }, [activeIndex, indicatorOpacity, moveIndicator]);
 
   return (
     <YStack gap="$5" p="$4" style={{ flex: 1 }}>
@@ -192,25 +158,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </Text>
       </YStack>
 
-      <YStack style={{ position: "relative" }}>
-        <Animated.View
-          style={{
-            backgroundColor: colors.primarySoft,
-            borderRadius: appRadii.md,
-            height: sidebarItemHeight,
-            left: 0,
-            opacity: indicatorOpacity,
-            pointerEvents: "none",
-            position: "absolute",
-            right: 0,
-            shadowColor: colors.shadow,
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.08,
-            shadowRadius: 14,
-            top: 0,
-            transform: [{ translateY: indicatorY }],
-          }}
-        />
+      <YStack>
         {navigationItems.map((item, index) => (
           <SidebarItem
             key={item.labelKey}
@@ -218,7 +166,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             isActive={index === activeIndex}
             item={item}
             onNavigate={onNavigate}
-            onSelect={moveIndicator}
           />
         ))}
       </YStack>
