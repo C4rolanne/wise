@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Animated, Easing, Image } from "react-native";
@@ -6,12 +7,12 @@ import { Text, XStack, YStack } from "tamagui";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/src/shared/i18n";
 import { useAppPreferences } from "@/src/shared/theme";
-import { AppButton, ScreenContainer, SlidingSegmentedControl, StateView } from "@/src/shared/ui";
+import { AppButton, ScreenContainer, StateView } from "@/src/shared/ui";
 
 export default function Index() {
   const { isAuthenticated, loading, error, signInWithGoogle } = useAuth();
   const { t } = useTranslation();
-  const { colorScheme, language, colors, setColorScheme, setLanguage } = useAppPreferences();
+  const { colorScheme, language, colors, toggleColorScheme, toggleLanguage } = useAppPreferences();
   const petAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -63,24 +64,24 @@ export default function Index() {
         p="$4"
         style={{ flexWrap: "wrap", justifyContent: "flex-end" }}
       >
-        <SlidingSegmentedControl
-          value={colorScheme}
-          width={190}
-          options={[
-            { label: t("common.themeLight"), value: "light" },
-            { label: t("common.themeDark"), value: "dark" },
-          ]}
-          onChange={setColorScheme}
+        <AppButton
+          chromeless
+          circular
+          aria-label={t("settings.theme")}
+          icon={
+            <MaterialCommunityIcons
+              name={colorScheme === "light" ? "weather-night" : "white-balance-sunny"}
+              size={21}
+              color={colors.primary}
+            />
+          }
+          onPress={toggleColorScheme}
         />
-        <SlidingSegmentedControl
-          value={language}
-          width={132}
-          options={[
-            { label: "PT", value: "pt-BR" },
-            { label: "EN", value: "en" },
-          ]}
-          onChange={setLanguage}
-        />
+        <AppButton chromeless circular aria-label={t("settings.language")} onPress={toggleLanguage}>
+          <Text fontSize="$2" fontWeight="900" style={{ color: colors.primary }}>
+            {language === "pt-BR" ? "EN" : "PT"}
+          </Text>
+        </AppButton>
       </XStack>
       <YStack
         gap="$5"
